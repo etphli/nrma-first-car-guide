@@ -1,13 +1,8 @@
 export default {
   plugins: [
     {
-      name: 'lowbeam-entry',
+      name: 'legacy-og-routes',
       enforce: 'post',
-      transformIndexHtml(html) {
-        return html
-          .replace('/src/main.jsx', '/src/entry.jsx')
-          .replace('<title>NRMA First Car Guide</title>', '<title>LOWBEAM · A calmer first-car decision</title>');
-      },
       transform(code, id) {
         if (!id.includes('/src/App.jsx')) return null;
 
