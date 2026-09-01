@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import CarStudio from './CarStudio.jsx';
 
 const DEFAULT_DECISION = {
@@ -70,6 +70,7 @@ const bibliography = [
   ['ANCAP Safety', 'Vehicle safety ratings', 'https://www.ancap.com.au/', 'Independent safety rating information.'],
   ['NSW Government', 'Buying and selling vehicles', 'https://www.nsw.gov.au/driving-boating-and-transport/vehicle-registration/buying-and-selling-vehicles', 'Registration and transfer information for the NSW context.'],
   ['NRMA Insurance', 'Car insurance', 'https://www.nrma.com.au/car-insurance', 'Insurance terminology used as an industry reference only.'],
+  ['SRT Performance via Sketchfab', 'BMW M4 Competition M Package', 'https://sketchfab.com/3d-models/bmw-m4-competition-m-package-5c0a2dafb1ad408d9fc9eeef9aee531b', 'Interactive road-car model released under CC BY 4.0. Lowbeam removes the supplied livery and adds original materials, lighting and controls.'],
 ];
 
 function formatCurrency(value) {
@@ -289,12 +290,45 @@ function ContactModal({ onClose }) {
 }
 
 function BibliographyPage() {
-  return <main className="lb-bibliography"><div className="lb-wrap"><a className="lb-back-link" href="/"><Icon name="arrow" size={17} /> Back to Lowbeam</a><div className="lb-biblio-hero"><div className="lb-kicker"><i /> RESEARCH TRAIL</div><h1>Bibliography<span>.</span></h1><p>The sources behind the learning library and the checks in the lab. All links open in a new tab.</p></div><div className="lb-biblio-list">{bibliography.map((item, index) => <a href={item[2]} target="_blank" rel="noreferrer" className="lb-biblio-row" key={item[2]}><span className="lb-biblio-number">0{index + 1}</span><span><strong>{item[0]}</strong><b>{item[1]}</b><small>{item[3]}</small></span><Icon name="up" size={19} /></a>)}</div><div className="lb-biblio-notes"><div><span>Visual credit</span><p>The interactive car is original procedural 3D geometry built for this prototype. The earlier static vehicle image was generated with OpenAI ImageGen. No external stock photography is used.</p></div><div><span>AI and authorship note</span><p>This is an original student product concept. AI assisted with prototyping and copy development; facts should be checked against the linked primary sources before publication.</p></div><div><span>Accessed</span><p>1 September 2026</p></div></div></div></main>;
+  return <main className="lb-bibliography"><div className="lb-wrap"><a className="lb-back-link" href="/"><Icon name="arrow" size={17} /> Back to Lowbeam</a><div className="lb-biblio-hero"><div className="lb-kicker"><i /> RESEARCH TRAIL</div><h1>Bibliography<span>.</span></h1><p>The sources behind the learning library and the checks in the lab. All links open in a new tab.</p></div><div className="lb-biblio-list">{bibliography.map((item, index) => <a href={item[2]} target="_blank" rel="noreferrer" className="lb-biblio-row" key={item[2]}><span className="lb-biblio-number">0{index + 1}</span><span><strong>{item[0]}</strong><b>{item[1]}</b><small>{item[3]}</small></span><Icon name="up" size={19} /></a>)}</div><div className="lb-biblio-notes"><div><span>Visual credit</span><p>The interactive road car is adapted from the BMW M4 Competition M Package model by SRT Performance, licensed under CC BY 4.0. Lowbeam removes the supplied livery and adds original materials, lighting and interaction.</p></div><div><span>AI and authorship note</span><p>This is an original student product concept. AI assisted with prototyping and copy development; facts should be checked against the linked primary sources before publication.</p></div><div><span>Accessed</span><p>1 September 2026</p></div></div></div></main>;
+}
+
+const MAP_POINTS = [
+  [95, 60, 35], [245, 135, 74], [420, 230, 130], [340, 335, 148], [150, 430, 48],
+  [115, 555, 108], [285, 650, 54], [450, 735, 125], [385, 845, 150], [205, 935, 78],
+];
+
+function MistakeMap() {
+  const [active, setActive] = useState(0);
+  const stopRefs = useRef([]);
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) setActive(Number(visible.target.dataset.mapStop));
+    }, { rootMargin: '-28% 0px -42% 0px', threshold: [0.2, 0.45, 0.7] });
+    stopRefs.current.forEach((node) => node && observer.observe(node));
+    return () => observer.disconnect();
+  }, []);
+  const [carX, carY, carRotation] = MAP_POINTS[active];
+  return <div className="lb-map-layout">
+    <section className="lb-map-stage" aria-label={`Mistake ${active + 1} of ${mistakes.length}`} style={{ '--map-progress': active / (mistakes.length - 1) }}>
+      <div className="lb-map-heading"><h1>The mistake<br />map<span>.</span></h1><p>Ten wrong turns.<br />One clearer way through.</p><strong aria-live="polite"><b>{active + 1}</b> of {mistakes.length}</strong><div role="progressbar" aria-label="Mistake map progress" aria-valuemin="1" aria-valuemax={mistakes.length} aria-valuenow={active + 1}><i style={{ width: `${((active + 1) / mistakes.length) * 100}%` }} /></div><small>{active === mistakes.length - 1 ? 'You made it through' : 'Keep scrolling'}</small></div>
+      <svg className="lb-road-map" viewBox="0 0 560 980" role="img" aria-label="A winding road with ten mistake stops">
+        <g className="lb-contours"><path d="M12 160 C120 90 180 180 300 104 S480 30 548 95" /><path d="M10 505 C120 430 180 540 330 465 S500 420 552 480" /><path d="M5 800 C120 720 210 825 345 760 S480 730 555 790" /></g>
+        <path className="lb-road-edge" d="M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005" />
+        <path className="lb-road-centre" pathLength="100" d="M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005" />
+        <path className="lb-road-progress" pathLength="100" strokeDasharray={`${(active / 9) * 100} 100`} d="M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005" />
+        {MAP_POINTS.map(([x, y], index) => <g className={'lb-map-node' + (index === active ? ' is-active' : '')} transform={`translate(${x} ${y})`} key={mistakes[index][0]}><circle r="18" /><text y="5">{String(index + 1).padStart(2, '0')}</text></g>)}
+        <g className="lb-map-car" style={{ transform: `translate(${carX}px, ${carY}px) rotate(${carRotation}deg)` }}><rect x="-12" y="-23" width="24" height="46" rx="7" /><rect x="-9" y="-12" width="18" height="19" rx="3" /><circle cx="-13" cy="-12" r="4" /><circle cx="13" cy="-12" r="4" /><circle cx="-13" cy="13" r="4" /><circle cx="13" cy="13" r="4" /></g>
+      </svg>
+      <div className="lb-map-mobile-progress" aria-hidden="true"><b>{String(active + 1).padStart(2, '0')}</b><span>/ {mistakes.length}</span></div>
+    </section>
+    <div className="lb-map-stories">{mistakes.map((item, index) => <article ref={(node) => { stopRefs.current[index] = node; }} data-map-stop={index} className={index === active ? 'is-active' : ''} aria-current={index === active ? 'step' : undefined} key={item[0]}><header><span>{String(index + 1).padStart(2, '0')}</span><p>Wrong turn {index + 1}</p></header><h2>{item[0]}</h2><div className="lb-map-answer"><span>Why it happens</span><p>{item[1]}</p></div><div className="lb-map-answer"><span>The next move</span><p>{item[2]}</p></div>{index < mistakes.length - 1 && <small>Next: {mistakes[index + 1][0]}</small>}</article>)}</div>
+  </div>;
 }
 
 function MistakePage() {
-  const [open, setOpen] = useState(0);
-  return <main className="lb-learning-page"><div className="lb-wrap"><a className="lb-back-link" href="/"><Icon name="arrow" size={17} /> Back to Lowbeam</a><div className="lb-learning-hero hero-coral"><div className="lb-kicker"><i /> LEARNING LIBRARY / 01</div><h1>The mistake<br /><span>map.</span></h1><p>Ten common first-car mistakes, decoded into the reason, the consequence and the next move.</p></div><div className="lb-page-intro"><span>Open each one.</span><p>A confident buyer does not know everything. They know what to check next.</p></div><div className="lb-mistake-list">{mistakes.map((item, index) => { const active = open === index; return <article key={item[0]} className={'lb-mistake' + (active ? ' is-open' : '')}><button type="button" aria-expanded={active} onClick={() => setOpen(active ? -1 : index)}><span>{String(index + 1).padStart(2, '0')}</span><strong>{item[0]}</strong><b>{active ? '−' : '+'}</b></button>{active && <div className="lb-mistake-body"><div><span>Why it happens</span><p>{item[1]}</p></div><div><span>The next move</span><p>{item[2]}</p></div></div>}</article>; })}</div></div></main>;
+  return <main className="lb-mistake-page"><div className="lb-wrap lb-map-top"><a className="lb-back-link" href="/"><Icon name="arrow" size={17} /> Back to Lowbeam</a><p>A confident buyer does not know everything. They know what to check next.</p></div><MistakeMap /></main>;
 }
 
 function CostsPage({ decision, setDecision, result }) {
