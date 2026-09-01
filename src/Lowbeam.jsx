@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import CarStudio from './CarStudio.jsx';
 
 const DEFAULT_DECISION = {
   model: 'Used hatchback',
@@ -143,12 +144,11 @@ function LowbeamHeader({ isHome = true }) {
   const closeMenu = () => setMenuOpen(false);
   const anchor = (id) => isHome ? `#${id}` : `/#${id}`;
   const openLab = () => { closeMenu(); if (isHome) document.getElementById('lab')?.scrollIntoView({ behavior: 'smooth' }); else window.location.href = '/#lab'; };
-  return <header className="lb-header"><div className="lb-wrap lb-header-inner"><a className="lb-logo" href="/" onClick={closeMenu}>LOWBEAM<span className="lb-logo-dot">.</span></a><nav className={'lb-nav' + (menuOpen ? ' is-open' : '')}><a href={anchor('how')} onClick={closeMenu}>How it works</a><a href={anchor('lab')} onClick={closeMenu}>The lab</a><a href={anchor('library')} onClick={closeMenu}>Learning library</a><a href={anchor('teams')} onClick={closeMenu}>For teams</a><a href="/bibliography" onClick={closeMenu}>Bibliography</a></nav><div className="lb-header-actions"><button className="lb-header-cta" type="button" onClick={openLab}>Open the lab <Icon name="arrow" size={17} /></button><button className="lb-menu-button" type="button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><Icon name={menuOpen ? 'close' : 'menu'} size={22} /></button></div></div></header>;
+  return <header className="lb-header"><div className="lb-wrap lb-header-inner"><a className="lb-logo" href="/" onClick={closeMenu}>LOWBEAM</a><nav className={'lb-nav' + (menuOpen ? ' is-open' : '')}><a href={anchor('lab')} onClick={closeMenu}>Check a car</a><a href="/costs" onClick={closeMenu}>Costs</a><a href="/protect" onClick={closeMenu}>Your rights</a><a href="/insurance" onClick={closeMenu}>Insurance</a><a href="/bibliography" onClick={closeMenu}>Sources</a></nav><div className="lb-header-actions"><button className="lb-command-button" type="button" onClick={() => window.dispatchEvent(new CustomEvent('lowbeam:command'))} aria-label="Open quick find">⌘K</button><button className="lb-header-cta" type="button" onClick={openLab}>Start a check <Icon name="arrow" size={17} /></button><button className="lb-menu-button" type="button" aria-label={menuOpen ? 'Close menu' : 'Open menu'} aria-expanded={menuOpen} onClick={() => setMenuOpen((value) => !value)}><Icon name={menuOpen ? 'close' : 'menu'} size={22} /></button></div></div></header>;
 }
 
-function LowbeamFooter({ isHome = true }) {
-  const anchor = (id) => isHome ? `#${id}` : `/#${id}`;
-  return <footer className="lb-footer"><div className="lb-wrap lb-footer-main"><div><a className="lb-footer-logo" href="/">LOWBEAM<span className="lb-logo-dot">.</span></a><p>A calmer decision system<br />for first-car moments.</p></div><div className="lb-footer-column"><strong>Product</strong><a href={anchor('how')}>How it works</a><a href={anchor('lab')}>The lab</a><a href={anchor('teams')}>For teams</a></div><div className="lb-footer-column"><strong>Learning</strong><a href={anchor('library')}>Library</a><a href="/mistakes">Mistake map</a><a href="/bibliography">Bibliography</a></div><div className="lb-footer-column"><strong>Contact</strong><a href="mailto:hello@lowbeam.example">hello@lowbeam.example</a><a href={anchor('teams')}>Bring Lowbeam in</a></div></div><div className="lb-wrap lb-footer-bottom"><span>© 2026 Lowbeam Pty Ltd. Classroom prototype.</span><span>Original student project · educational use</span></div></footer>;
+function LowbeamFooter() {
+  return <footer className="lb-footer"><div className="lb-wrap lb-footer-main"><div><a className="lb-footer-logo" href="/">LOWBEAM</a><p>A practical first-car guide<br />for Australian students.</p></div><div className="lb-footer-column"><strong>Start here</strong><a href="/#lab">Check a car</a><a href="/costs">Work out costs</a><a href="/mistakes">Common mistakes</a></div><div className="lb-footer-column"><strong>Know before you buy</strong><a href="/protect">Your rights</a><a href="/insurance">Insurance</a><a href="/bibliography">Sources</a></div></div><div className="lb-wrap lb-footer-bottom"><span>© 2026 Lowbeam. Classroom prototype.</span><span>Original student project · educational use</span></div></footer>;
 }
 
 function SignalPreview({ score, monthlyCost, onOpenLab }) {
@@ -169,7 +169,48 @@ function buildBrief(decision, result) {
 }
 
 function Hero({ decision, result, onOpenLab }) {
-  return <section className="lb-hero"><div className="lb-wrap lb-hero-grid"><div className="lb-hero-copy"><div className="lb-kicker"><i /> FOR FIRST-CAR DECISIONS</div><h1>Your first car should feel like a <span>yes.</span></h1><p>A calmer decision system for the money, the machine and the moment.</p><div className="lb-hero-actions"><button className="lb-button lb-button-lime" type="button" onClick={onOpenLab}>Run the 2-minute check <Icon name="arrow" size={18} /></button><a className="lb-button lb-button-ghost" href="#how">See how it works</a></div><div className="lb-hero-proof"><span><Icon name="target" size={21} /> Clear answers<br /><small>in plain language</small></span><span><Icon name="shield" size={21} /> Real-world costs<br /><small>you can trust</small></span><span><Icon name="person" size={21} /> Built for families,<br /><small>schools and teams</small></span></div></div><SignalPreview score={result.score} monthlyCost={result.monthlyCost} onOpenLab={onOpenLab} /></div></section>;
+  return <section className="lb-hero"><div className="lb-wrap lb-hero-grid"><div className="lb-hero-copy"><h1>Buy your first car with your eyes open.</h1><p>A practical Australian guide to the costs, risks and rights that matter before you hand over the money.</p><div className="lb-hero-actions"><button className="lb-button lb-button-lime" type="button" onClick={onOpenLab}>Check a car <Icon name="arrow" size={18} /></button><a className="lb-text-link" href="#library">Explore the guide <Icon name="arrow" size={17} /></a></div><div className="lb-current-readout"><span>Your saved estimate</span><strong>{decision.model || 'First car'} · {formatCurrency(result.monthlyCost)}/month</strong></div></div><CarStudio /></div></section>;
+}
+
+const taskLinks = [
+  ['01', 'Check a car', 'Look before you buy', '#lab'],
+  ['02', 'Work out the real cost', 'See the full picture', '/costs'],
+  ['03', 'Know my rights', 'Protect the purchase', '/protect'],
+  ['04', 'Compare insurance', 'Understand the cover', '/insurance'],
+];
+
+function TaskRail() {
+  return <nav className="lb-task-rail" aria-label="Choose what you need"><div className="lb-wrap">{taskLinks.map(([number, title, copy, href]) => <a href={href} key={href}><b>{number}</b><span><strong>{title}</strong><small>{copy}</small></span><Icon name="arrow" size={18} /></a>)}</div></nav>;
+}
+
+function QuickCheck({ decision, setDecision, result, onToast }) {
+  const [step, setStep] = useState(0);
+  const types = ['Hatchback', 'SUV / wagon', 'Sedan', 'Ute'];
+  const [carType, setCarType] = useStoredState('lowbeam-car-type-v1', 'Hatchback');
+  const update = (key, value) => setDecision((current) => ({ ...current, [key]: value }));
+  const steps = [
+    <div className="lb-wizard-options" key="type">{types.map((type) => <button type="button" className={carType === type ? 'is-selected' : ''} onClick={() => setCarType(type)} key={type}><span className="lb-radio" />{type}</button>)}</div>,
+    <div className="lb-wizard-fields" key="price"><Field label="Car or description"><input value={decision.model} onChange={(event) => update('model', event.target.value)} placeholder="e.g. 2018 Mazda 3" /></Field><Field label="Advertised price"><div className="lb-input-prefix"><span>$</span><input type="number" min="1000" step="500" value={decision.price} onChange={(event) => update('price', Number(event.target.value))} /></div></Field></div>,
+    <div className="lb-wizard-fields" key="budget"><Field label="Monthly comfort zone" note={formatCurrency(decision.monthlyBudget)}><input className="lb-range" type="range" min="250" max="1200" step="25" value={decision.monthlyBudget} onChange={(event) => update('monthlyBudget', Number(event.target.value))} /></Field><Field label="Kilometres each year" note={Number(decision.kilometres).toLocaleString('en-AU') + ' km'}><input className="lb-range lb-range-blue" type="range" min="5000" max="30000" step="1000" value={decision.kilometres} onChange={(event) => update('kilometres', Number(event.target.value))} /></Field></div>,
+    <div className="lb-wizard-checks" key="checks"><button type="button" className={decision.history ? 'is-selected' : ''} onClick={() => update('history', !decision.history)}><Icon name="history" size={20} /><span><strong>Vehicle history checked</strong><small>Finance, stolen and write-off status</small></span></button><button type="button" className={decision.inspected ? 'is-selected' : ''} onClick={() => update('inspected', !decision.inspected)}><Icon name="wrench" size={20} /><span><strong>Independent inspection booked</strong><small>A mechanic checks what the ad cannot show</small></span></button></div>,
+  ];
+  const headings = ['What type of car are you checking?', 'Which car have you found?', 'Will it fit normal life?', 'Two checks before you commit'];
+  const next = () => { if (step < 3) setStep(step + 1); else onToast('Your buyer brief is ready'); };
+  return <section className="lb-quick-check" id="lab"><div className="lb-wrap lb-quick-grid"><div className="lb-wizard"><div className="lb-step-line"><span>Step {step + 1} of 4</span><div>{[0, 1, 2, 3].map((item) => <i className={item <= step ? 'is-active' : ''} key={item} />)}</div></div><h2>{headings[step]}</h2><p className="lb-wizard-help">Answer what you know. You can change it later.</p>{steps[step]}<div className="lb-wizard-actions">{step > 0 && <button type="button" className="lb-back-button" onClick={() => setStep(step - 1)}>Back</button>}<button type="button" className="lb-button lb-button-blue" onClick={next}>{step === 3 ? 'Finish my check' : 'Next'} <Icon name="arrow" size={18} /></button></div></div><aside className="lb-check-summary"><span>Your check</span><SignalRing score={result.score} large /><dl><div><dt>Car</dt><dd>{decision.model || carType}</dd></div><div><dt>Advertised</dt><dd>{formatCurrency(decision.price)}</dd></div><div><dt>Monthly reality</dt><dd>{formatCurrency(result.monthlyCost)}</dd></div><div><dt>Checks complete</dt><dd>{Number(decision.history) + Number(decision.inspected)} / 2</dd></div></dl><p>This score is a prompt to investigate, not a verdict.</p></aside></div></section>;
+}
+
+function CommandPalette() {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  useEffect(() => {
+    const show = () => setOpen(true);
+    const key = (event) => { if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); setOpen(true); } if (event.key === 'Escape') setOpen(false); };
+    window.addEventListener('lowbeam:command', show); window.addEventListener('keydown', key);
+    return () => { window.removeEventListener('lowbeam:command', show); window.removeEventListener('keydown', key); };
+  }, []);
+  const items = [...taskLinks, ['05', 'Common mistakes', 'Avoid the traps', '/mistakes'], ['06', 'Bibliography', 'See every source', '/bibliography']].filter((item) => (item[1] + item[2]).toLowerCase().includes(query.toLowerCase()));
+  if (!open) return null;
+  return <div className="lb-command-backdrop" onMouseDown={() => setOpen(false)}><div className="lb-command" role="dialog" aria-modal="true" aria-label="Quick find" onMouseDown={(event) => event.stopPropagation()}><div className="lb-command-input"><Icon name="target" size={20} /><input autoFocus value={query} onChange={(event) => setQuery(event.target.value)} placeholder="What do you need help with?" /><kbd>Esc</kbd></div><div className="lb-command-results">{items.map((item) => <a href={item[3]} key={item[3]} onClick={() => setOpen(false)}><span>{item[0]}</span><strong>{item[1]}<small>{item[2]}</small></strong><Icon name="arrow" size={17} /></a>)}</div></div></div>;
 }
 
 function HowItWorks() {
@@ -248,7 +289,7 @@ function ContactModal({ onClose }) {
 }
 
 function BibliographyPage() {
-  return <main className="lb-bibliography"><div className="lb-wrap"><a className="lb-back-link" href="/"><Icon name="arrow" size={17} /> Back to Lowbeam</a><div className="lb-biblio-hero"><div className="lb-kicker"><i /> RESEARCH TRAIL</div><h1>Bibliography<span>.</span></h1><p>The sources behind the learning library and the checks in the lab. All links open in a new tab.</p></div><div className="lb-biblio-list">{bibliography.map((item, index) => <a href={item[2]} target="_blank" rel="noreferrer" className="lb-biblio-row" key={item[2]}><span className="lb-biblio-number">0{index + 1}</span><span><strong>{item[0]}</strong><b>{item[1]}</b><small>{item[3]}</small></span><Icon name="up" size={19} /></a>)}</div><div className="lb-biblio-notes"><div><span>Image credit</span><p>Original vehicle cutout generated for this prototype with OpenAI ImageGen. No external stock photography is used on the Lowbeam site.</p></div><div><span>AI and authorship note</span><p>This is an original student product concept. AI assisted with prototyping and copy development; facts should be checked against the linked primary sources before publication.</p></div><div><span>Accessed</span><p>1 September 2026</p></div></div></div></main>;
+  return <main className="lb-bibliography"><div className="lb-wrap"><a className="lb-back-link" href="/"><Icon name="arrow" size={17} /> Back to Lowbeam</a><div className="lb-biblio-hero"><div className="lb-kicker"><i /> RESEARCH TRAIL</div><h1>Bibliography<span>.</span></h1><p>The sources behind the learning library and the checks in the lab. All links open in a new tab.</p></div><div className="lb-biblio-list">{bibliography.map((item, index) => <a href={item[2]} target="_blank" rel="noreferrer" className="lb-biblio-row" key={item[2]}><span className="lb-biblio-number">0{index + 1}</span><span><strong>{item[0]}</strong><b>{item[1]}</b><small>{item[3]}</small></span><Icon name="up" size={19} /></a>)}</div><div className="lb-biblio-notes"><div><span>Visual credit</span><p>The interactive car is original procedural 3D geometry built for this prototype. The earlier static vehicle image was generated with OpenAI ImageGen. No external stock photography is used.</p></div><div><span>AI and authorship note</span><p>This is an original student product concept. AI assisted with prototyping and copy development; facts should be checked against the linked primary sources before publication.</p></div><div><span>Accessed</span><p>1 September 2026</p></div></div></div></main>;
 }
 
 function MistakePage() {
@@ -291,7 +332,7 @@ function LowbeamHome({ onContact }) {
 
   const openLab = () => document.getElementById('lab')?.scrollIntoView({ behavior: 'smooth' });
   const showToast = (message) => setToast(message);
-  return <div className="lowbeam-site"><LowbeamHeader onContact={onContact} /><Hero decision={decision} result={result} onOpenLab={openLab} /><HowItWorks /><DecisionLab decision={decision} setDecision={setDecision} result={result} onToast={showToast} /><Signals /><Mission completed={completed} setCompleted={setCompleted} onToast={showToast} /><Coach onToast={showToast} /><Library onToast={() => showToast('Library saved to your browser')} /><Teams onContact={onContact} /><LowbeamFooter />{toast && <div className="lb-toast" role="status"><Icon name="check" size={17} />{toast}</div>}</div>;
+  return <div className="lowbeam-site"><LowbeamHeader onContact={onContact} /><Hero decision={decision} result={result} onOpenLab={openLab} /><TaskRail /><QuickCheck decision={decision} setDecision={setDecision} result={result} onToast={showToast} /><HowItWorks /><Library onToast={() => showToast('Library saved to your browser')} /><Mission completed={completed} setCompleted={setCompleted} onToast={showToast} /><LowbeamFooter /><CommandPalette />{toast && <div className="lb-toast" role="status"><Icon name="check" size={17} />{toast}</div>}</div>;
 }
 
 function LowbeamPage({ pathname }) {
