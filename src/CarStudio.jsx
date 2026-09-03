@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 const HOTSPOTS = {
-  cost: ['Cost', 'See the purchase price and the monthly reality together.'],
-  safety: ['Safety', 'Check the inspection, tyres, brakes and ANCAP rating.'],
-  history: ['History', 'Confirm ownership, finance, write-off and stolen status.'],
+  cost: ['Cost', 'See the purchase price and the monthly reality together.', '/costs', 'Open cost lab'],
+  safety: ['Safety', 'Check the inspection, tyres, brakes and ANCAP rating.', '/protect', 'Open buyer checklist'],
+  history: ['History', 'Confirm ownership, finance, write-off and stolen status.', '/mistakes', 'See the warning signs'],
 };
 
 export default function CarStudio() {
@@ -140,6 +140,6 @@ export default function CarStudio() {
   return <div className="lb-car-studio">
     <div ref={mountRef} className="lb-car-canvas" aria-hidden="true" />
     {!ready && <div className="lb-car-loading"><span>Loading detailed model</span><i><b style={{ width: `${progress}%` }} /></i><small>{progress}%</small></div>}
-    {ready && <><div className="lb-hotspots" aria-label="Explore the car checks">{Object.entries(HOTSPOTS).map(([key, value]) => <button key={key} type="button" className={active === key ? 'is-active' : ''} onClick={() => setActive(key)}><span>+</span>{value[0]}</button>)}</div><div className="lb-hotspot-note" role="status"><strong>{HOTSPOTS[active][0]}</strong><span>{HOTSPOTS[active][1]}</span></div><p className="lb-drag-hint">Drag the car to rotate</p></>}
+    {ready && <><div className="lb-hotspots" aria-label="Explore the car checks">{Object.entries(HOTSPOTS).map(([key, value]) => <button key={key} type="button" aria-pressed={active === key} className={active === key ? 'is-active' : ''} onClick={() => setActive(key)}><span>+</span>{value[0]}</button>)}</div><div className="lb-hotspot-note" role="status"><strong>{HOTSPOTS[active][0]}</strong><span>{HOTSPOTS[active][1]}</span><a href={HOTSPOTS[active][2]}>{HOTSPOTS[active][3]} <b>→</b></a></div><p className="lb-drag-hint">Drag the car to rotate</p></>}
   </div>;
 }

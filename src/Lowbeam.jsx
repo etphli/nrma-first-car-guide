@@ -170,7 +170,7 @@ function buildBrief(decision, result) {
 }
 
 function Hero({ decision, result, onOpenLab }) {
-  return <section className="lb-hero"><div className="lb-wrap lb-hero-grid"><div className="lb-hero-copy"><h1>Buy your first car with your eyes open.</h1><p>A practical Australian guide to the costs, risks and rights that matter before you hand over the money.</p><div className="lb-hero-actions"><button className="lb-button lb-button-lime" type="button" onClick={onOpenLab}>Check a car <Icon name="arrow" size={18} /></button><a className="lb-text-link" href="#library">Explore the guide <Icon name="arrow" size={17} /></a></div><div className="lb-current-readout"><span>Your saved estimate</span><strong>{decision.model || 'First car'} · {formatCurrency(result.monthlyCost)}/month</strong></div></div><CarStudio /></div></section>;
+  return <section className="lb-hero"><div className="lb-wrap lb-hero-grid"><div className="lb-hero-copy"><div className="lb-kicker"><i /> YOUR FIRST-CAR FIELD GUIDE</div><h1>Buy your first car with your eyes open.</h1><p>A practical Australian guide to the costs, risks and rights that matter before you hand over the money.</p><div className="lb-hero-actions"><button className="lb-button lb-button-lime" type="button" onClick={onOpenLab}>Check a car <Icon name="arrow" size={18} /></button><a className="lb-text-link" href="#library">Explore the guide <Icon name="arrow" size={17} /></a></div><div className="lb-current-readout"><span>Your saved estimate</span><strong>{decision.model || 'First car'} · {formatCurrency(result.monthlyCost)}/month</strong></div><nav className="lb-hero-shortcuts" aria-label="Popular starting points"><button type="button" onClick={onOpenLab}><Icon name="wallet" size={18} /><span><small>Run the numbers</small>Budget check</span><Icon name="arrow" size={16} /></button><a href="/mistakes"><Icon name="warning" size={18} /><span><small>Learn the traps</small>Mistake map</span><Icon name="arrow" size={16} /></a><a href="/protect"><Icon name="shield" size={18} /><span><small>Before you pay</small>Buyer checklist</span><Icon name="arrow" size={16} /></a></nav></div><CarStudio /></div></section>;
 }
 
 const taskLinks = [
@@ -215,7 +215,13 @@ function CommandPalette() {
 }
 
 function HowItWorks() {
-  return <section className="lb-how" id="how"><div className="lb-wrap lb-how-grid"><div className="lb-section-title"><div className="lb-kicker"><i /> THE IDEA</div><h2>Most first-car surprises are avoidable.</h2><p>Lowbeam turns the noise of ads, opinions and assumptions into a single, clear path to a better decision.</p></div><div className="lb-how-steps"><div><span>01</span><h3>Set your brief.</h3><p>Start with the life you want the car to fit. Budget, use and what matters most.</p></div><div><span>02</span><h3>Scan the signals.</h3><p>See the costs and confidence gaps that a listing page leaves out.</p></div><div><span>03</span><h3>Decide with calm.</h3><p>Take a shareable brief to a parent, mechanic or seller before you commit.</p></div></div></div></section>;
+  const [active, setActive] = useState(0);
+  const steps = [
+    ['Set your brief.', 'Start with the life you want the car to fit. Budget, use and what matters most.', 'A shortlist shaped by your life—not the loudest listing.'],
+    ['Scan the signals.', 'See the costs and confidence gaps that a listing page leaves out.', 'One view of price, running costs, history and safety.'],
+    ['Decide with calm.', 'Take a shareable brief to a parent, mechanic or seller before you commit.', 'Clear questions, walk-away points and a decision you can explain.'],
+  ];
+  return <section className="lb-how" id="how"><div className="lb-wrap lb-how-grid"><div className="lb-section-title"><div className="lb-kicker"><i /> THE IDEA</div><h2>Most first-car surprises are avoidable.</h2><p>Lowbeam turns the noise of ads, opinions and assumptions into a single, clear path to a better decision.</p><a className="lb-section-link" href="/mistakes">See the ten wrong turns <Icon name="arrow" size={17} /></a></div><div><div className="lb-how-steps" role="tablist" aria-label="How Lowbeam works">{steps.map((step, index) => <button type="button" role="tab" aria-selected={active === index} className={active === index ? 'is-active' : ''} onClick={() => setActive(index)} key={step[0]}><span>0{index + 1}</span><h3>{step[0]}</h3><p>{step[1]}</p><Icon name="arrow" size={18} /></button>)}</div><div className="lb-how-outcome" role="tabpanel" aria-live="polite"><span>WHAT YOU LEAVE WITH</span><strong>{steps[active][2]}</strong></div></div></div></section>;
 }
 
 function Field({ label, children, note }) {
@@ -256,7 +262,7 @@ function Signals() {
 function Mission({ completed, setCompleted, onToast }) {
   const progress = Math.round(completed.length / missionSteps.length * 100);
   const toggle = (index) => setCompleted((items) => items.includes(index) ? items.filter((item) => item !== index) : [...items, index].sort((a, b) => a - b));
-  return <section className="lb-mission"><div className="lb-wrap"><div className="lb-mission-head"><div><div className="lb-kicker"><i /> THE ROUTE</div><h2>A better decision<br /><span>in seven days.</span></h2></div><div className="lb-progress-summary"><strong>{progress}%</strong><span>of your plan<br />complete</span><div><i style={{ width: progress + '%' }} /></div></div></div><div className="lb-timeline">{missionSteps.map((step, index) => <button type="button" key={step[0]} className={'lb-day' + (completed.includes(index) ? ' is-complete' : '')} onClick={() => { toggle(index); onToast(completed.includes(index) ? 'Day ' + (index + 1) + ' reopened' : 'Day ' + (index + 1) + ' complete'); }}><span className="lb-day-dot">{completed.includes(index) ? <Icon name="check" size={17} /> : index + 1}</span><span className="lb-day-label">DAY {index + 1}</span><strong>{step[0]}</strong><p>{step[1]}</p></button>)}</div><div className="lb-mission-bar"><Icon name="bookmark" size={18} /><span>We guide you each day with clear actions and plain-language insights.</span><button type="button" onClick={() => { document.getElementById('lab')?.scrollIntoView({ behavior: 'smooth' }); }}>Start your seven-day plan <Icon name="arrow" size={16} /></button></div></div></section>;
+  return <section className="lb-mission"><div className="lb-wrap"><div className="lb-mission-head"><div><div className="lb-kicker"><i /> THE ROUTE</div><h2>A better decision<br /><span>in seven days.</span></h2></div><div className="lb-progress-summary"><strong>{progress}%</strong><span>of your plan<br />complete</span><div><i style={{ width: progress + '%' }} /></div></div></div><div className="lb-timeline">{missionSteps.map((step, index) => <button type="button" aria-pressed={completed.includes(index)} key={step[0]} className={'lb-day' + (completed.includes(index) ? ' is-complete' : '')} onClick={() => { toggle(index); onToast(completed.includes(index) ? 'Day ' + (index + 1) + ' reopened' : 'Day ' + (index + 1) + ' complete'); }}><span className="lb-day-dot">{completed.includes(index) ? <Icon name="check" size={17} /> : index + 1}</span><span className="lb-day-label">DAY {index + 1}</span><strong>{step[0]}</strong><p>{step[1]}</p></button>)}</div><div className={'lb-mission-bar' + (progress === 100 ? ' is-complete' : '')}><Icon name={progress === 100 ? 'check' : 'bookmark'} size={18} /><span>{progress === 100 ? 'Route complete. Your next move is to compare the final contenders.' : 'Tap each day as you complete it. Your progress stays on this device.'}</span>{completed.length > 0 && <button type="button" onClick={() => { setCompleted([]); onToast('Seven-day plan reset'); }}>Reset plan</button>}<button type="button" onClick={() => { document.getElementById('lab')?.scrollIntoView({ behavior: 'smooth' }); }}>{progress ? 'Open my car check' : 'Start the plan'} <Icon name="arrow" size={16} /></button></div></div></section>;
 }
 
 function answerCoach(question) {
@@ -277,7 +283,9 @@ function Coach({ onToast }) {
 }
 
 function Library({ onToast }) {
-  return <section className="lb-library" id="library"><div className="lb-wrap"><div className="lb-library-heading"><div><div className="lb-kicker"><i /> LEARNING LIBRARY</div><h2>The stuff no listing<br /><span>tells you.</span></h2></div><p>Lowbeam makes the important questions easier to ask, understand and remember.</p></div><div className="lb-library-grid">{learningCards.map((card) => <a className={'lb-learning-card card-' + card.colour} href={card.href} key={card.href}><div className="lb-learning-top"><div className="lb-learning-icon"><Icon name={card.icon} size={24} /></div><Icon name="arrow" size={19} /></div><span>{card.eyebrow}</span><h3>{card.title}</h3><p>{card.copy}</p></a>)}</div><div className="lb-library-bottom"><span>More useful than another “best first car” list.</span><button type="button" onClick={onToast}>Save the library <Icon name="bookmark" size={17} /></button></div></div></section>;
+  const [saved, setSaved] = useState(false);
+  const toggleSaved = () => { setSaved((value) => !value); onToast(saved ? 'Library removed from your saved list' : 'Four guides saved to this browser'); };
+  return <section className="lb-library" id="library"><div className="lb-wrap"><div className="lb-library-heading"><div><div className="lb-kicker"><i /> LEARNING LIBRARY</div><h2>The stuff no listing<br /><span>tells you.</span></h2></div><p>Lowbeam makes the important questions easier to ask, understand and remember.</p></div><div className="lb-library-grid">{learningCards.map((card, index) => <a className={'lb-learning-card card-' + card.colour} href={card.href} key={card.href}><div className="lb-learning-top"><div className="lb-learning-icon"><Icon name={card.icon} size={24} /></div><span className="lb-card-count">0{index + 1}</span><Icon name="arrow" size={19} /></div><span>{card.eyebrow}</span><h3>{card.title}</h3><p>{card.copy}</p><b>Open guide <Icon name="arrow" size={15} /></b></a>)}</div><div className="lb-library-bottom"><span>{saved ? 'Four guides are ready in your saved library.' : 'More useful than another “best first car” list.'}</span><button className={saved ? 'is-saved' : ''} aria-pressed={saved} type="button" onClick={toggleSaved}>{saved ? 'Library saved' : 'Save the library'} <Icon name={saved ? 'check' : 'bookmark'} size={17} /></button></div></div></section>;
 }
 
 function Teams({ onContact }) {
@@ -297,33 +305,100 @@ const MAP_POINTS = [
   [95, 60, 35], [245, 135, 74], [420, 230, 130], [340, 335, 148], [150, 430, 48],
   [115, 555, 108], [285, 650, 54], [450, 735, 125], [385, 845, 150], [205, 935, 78],
 ];
+const MAP_PATH = 'M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005';
 
 function MistakeMap() {
   const [active, setActive] = useState(0);
   const stopRefs = useRef([]);
+  const roadRef = useRef(null);
+  const stageRef = useRef(null);
+  const progressRef = useRef(null);
+  const carRef = useRef(null);
+  const worldRef = useRef(null);
+  const routeLengthsRef = useRef([]);
+  const animationRef = useRef({ position: null, frame: 0 });
   useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-      if (visible) setActive(Number(visible.target.dataset.mapStop));
-    }, { rootMargin: '-28% 0px -42% 0px', threshold: [0.2, 0.45, 0.7] });
-    stopRefs.current.forEach((node) => node && observer.observe(node));
-    return () => observer.disconnect();
+    document.documentElement.classList.add('lb-map-snap');
+    let scrollFrame = 0;
+    const updateVisibleStop = () => {
+      scrollFrame = 0;
+      const stageBottom = stageRef.current?.getBoundingClientRect().bottom || window.innerHeight * 0.5;
+      const probe = window.innerWidth <= 900 ? stageBottom + Math.max(70, (window.innerHeight - stageBottom) * 0.28) : window.innerHeight * 0.52;
+      const visibleIndex = stopRefs.current.findIndex((node) => {
+        if (!node) return false;
+        const bounds = node.getBoundingClientRect();
+        return bounds.top <= probe && bounds.bottom > probe;
+      });
+      if (visibleIndex >= 0) setActive(visibleIndex);
+    };
+    const queueUpdate = () => { if (!scrollFrame) scrollFrame = requestAnimationFrame(updateVisibleStop); };
+    window.addEventListener('scroll', queueUpdate, { passive: true });
+    window.addEventListener('resize', queueUpdate);
+    queueUpdate();
+    return () => { window.removeEventListener('scroll', queueUpdate); window.removeEventListener('resize', queueUpdate); document.documentElement.classList.remove('lb-map-snap'); cancelAnimationFrame(scrollFrame); cancelAnimationFrame(animationRef.current.frame); };
   }, []);
-  const [carX, carY, carRotation] = MAP_POINTS[active];
+  useEffect(() => {
+    const road = roadRef.current;
+    if (!road || !carRef.current || !worldRef.current) return undefined;
+    const total = road.getTotalLength();
+    if (!routeLengthsRef.current.length) {
+      routeLengthsRef.current = MAP_POINTS.map(([targetX, targetY]) => {
+        let nearest = 0;
+        let nearestDistance = Infinity;
+        for (let sample = 0; sample <= 700; sample += 1) {
+          const length = total * sample / 700;
+          const point = road.getPointAtLength(length);
+          const distance = (point.x - targetX) ** 2 + (point.y - targetY) ** 2;
+          if (distance < nearestDistance) { nearestDistance = distance; nearest = length; }
+        }
+        return nearest;
+      });
+    }
+    const renderPosition = (position) => {
+      const point = road.getPointAtLength(position);
+      const ahead = road.getPointAtLength(Math.min(total, position + 4));
+      const angle = Math.atan2(ahead.y - point.y, ahead.x - point.x) * 180 / Math.PI - 90;
+      const cameraY = clamp(330 - point.y, -390, 20);
+      carRef.current?.setAttribute('transform', `translate(${point.x} ${point.y}) rotate(${angle})`);
+      worldRef.current?.setAttribute('transform', `translate(0 ${cameraY})`);
+      if (progressRef.current) progressRef.current.style.strokeDasharray = `${position / total * 100} 100`;
+    };
+    const target = routeLengthsRef.current[active];
+    const start = animationRef.current.position ?? target;
+    cancelAnimationFrame(animationRef.current.frame);
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || start === target) {
+      animationRef.current.position = target;
+      renderPosition(target);
+      return undefined;
+    }
+    const startedAt = performance.now();
+    const duration = 1050;
+    const animate = (now) => {
+      const time = clamp((now - startedAt) / duration, 0, 1);
+      const eased = time < 0.5 ? 4 * time ** 3 : 1 - (-2 * time + 2) ** 3 / 2;
+      const position = start + (target - start) * eased;
+      animationRef.current.position = position;
+      renderPosition(position);
+      if (time < 1) animationRef.current.frame = requestAnimationFrame(animate);
+    };
+    animationRef.current.frame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationRef.current.frame);
+  }, [active]);
+  const goToStop = (index) => { setActive(index); stopRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
   return <div className="lb-map-layout">
-    <section className="lb-map-stage" aria-label={`Mistake ${active + 1} of ${mistakes.length}`} style={{ '--map-progress': active / (mistakes.length - 1) }}>
+    <section ref={stageRef} className="lb-map-stage" aria-label={`Mistake ${active + 1} of ${mistakes.length}`}>
       <div className="lb-map-heading"><h1>The mistake<br />map<span>.</span></h1><p>Ten wrong turns.<br />One clearer way through.</p><strong aria-live="polite"><b>{active + 1}</b> of {mistakes.length}</strong><div role="progressbar" aria-label="Mistake map progress" aria-valuemin="1" aria-valuemax={mistakes.length} aria-valuenow={active + 1}><i style={{ width: `${((active + 1) / mistakes.length) * 100}%` }} /></div><small>{active === mistakes.length - 1 ? 'You made it through' : 'Keep scrolling'}</small></div>
-      <svg className="lb-road-map" viewBox="0 0 560 980" role="img" aria-label="A winding road with ten mistake stops">
-        <g className="lb-contours"><path d="M12 160 C120 90 180 180 300 104 S480 30 548 95" /><path d="M10 505 C120 430 180 540 330 465 S500 420 552 480" /><path d="M5 800 C120 720 210 825 345 760 S480 730 555 790" /></g>
-        <path className="lb-road-edge" d="M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005" />
-        <path className="lb-road-centre" pathLength="100" d="M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005" />
-        <path className="lb-road-progress" pathLength="100" strokeDasharray={`${(active / 9) * 100} 100`} d="M64 -20 C50 110 270 65 355 175 C445 290 180 295 126 410 C75 520 110 585 260 625 C445 675 500 755 394 838 C330 890 205 850 185 1005" />
+      <svg className="lb-road-map" viewBox="0 0 560 700" role="img" aria-label="A winding road with ten mistake stops">
+        <g ref={worldRef} className="lb-map-world"><g className="lb-contours"><path d="M12 160 C120 90 180 180 300 104 S480 30 548 95" /><path d="M10 505 C120 430 180 540 330 465 S500 420 552 480" /><path d="M5 800 C120 720 210 825 345 760 S480 730 555 790" /></g>
+        <path ref={roadRef} className="lb-road-edge" d={MAP_PATH} />
+        <path className="lb-road-centre" pathLength="100" d={MAP_PATH} />
+        <path ref={progressRef} className="lb-road-progress" pathLength="100" strokeDasharray="0 100" d={MAP_PATH} />
         {MAP_POINTS.map(([x, y], index) => <g className={'lb-map-node' + (index === active ? ' is-active' : '')} transform={`translate(${x} ${y})`} key={mistakes[index][0]}><circle r="18" /><text y="5">{String(index + 1).padStart(2, '0')}</text></g>)}
-        <g className="lb-map-car" style={{ transform: `translate(${carX}px, ${carY}px) rotate(${carRotation}deg)` }}><rect x="-12" y="-23" width="24" height="46" rx="7" /><rect x="-9" y="-12" width="18" height="19" rx="3" /><circle cx="-13" cy="-12" r="4" /><circle cx="13" cy="-12" r="4" /><circle cx="-13" cy="13" r="4" /><circle cx="13" cy="13" r="4" /></g>
+        <g ref={carRef} className="lb-map-car"><ellipse cx="0" cy="4" rx="20" ry="30" /><rect x="-15" y="-27" width="30" height="54" rx="9" /><path d="M-11 -10 Q0 -18 11 -10 L9 8 Q0 13 -9 8Z" /><circle cx="-16" cy="-14" r="4" /><circle cx="16" cy="-14" r="4" /><circle cx="-16" cy="15" r="4" /><circle cx="16" cy="15" r="4" /><path d="M-9 -23h5M4 -23h5" /></g></g>
       </svg>
       <div className="lb-map-mobile-progress" aria-hidden="true"><b>{String(active + 1).padStart(2, '0')}</b><span>/ {mistakes.length}</span></div>
     </section>
-    <div className="lb-map-stories">{mistakes.map((item, index) => <article ref={(node) => { stopRefs.current[index] = node; }} data-map-stop={index} className={index === active ? 'is-active' : ''} aria-current={index === active ? 'step' : undefined} key={item[0]}><header><span>{String(index + 1).padStart(2, '0')}</span><p>Wrong turn {index + 1}</p></header><h2>{item[0]}</h2><div className="lb-map-answer"><span>Why it happens</span><p>{item[1]}</p></div><div className="lb-map-answer"><span>The next move</span><p>{item[2]}</p></div>{index < mistakes.length - 1 && <small>Next: {mistakes[index + 1][0]}</small>}</article>)}</div>
+    <div className="lb-map-stories">{mistakes.map((item, index) => <article ref={(node) => { stopRefs.current[index] = node; }} data-map-stop={index} className={index === active ? 'is-active' : ''} aria-current={index === active ? 'step' : undefined} key={item[0]}><header><span>{String(index + 1).padStart(2, '0')}</span><p>Wrong turn {index + 1}</p></header><h2>{item[0]}</h2><div className="lb-map-answer"><span>Why it happens</span><p>{item[1]}</p></div><div className="lb-map-answer"><span>The next move</span><p>{item[2]}</p></div><div className="lb-map-controls"><button type="button" disabled={index === 0} onClick={() => goToStop(index - 1)}>Previous</button><span>Stop {index + 1} / {mistakes.length}</span><button type="button" disabled={index === mistakes.length - 1} onClick={() => goToStop(index + 1)}>{index === mistakes.length - 1 ? 'Route complete' : 'Next stop'} <Icon name="arrow" size={15} /></button></div></article>)}</div>
   </div>;
 }
 
