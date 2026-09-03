@@ -3282,7 +3282,56 @@
 .lb-rights-note strong { font-family: "Arial Black", Impact, sans-serif; font-size: 20px; letter-spacing: -.06em; }
 .lb-rights-note p { margin: 0; font-size: 12px; line-height: 1.5; }
 
-.lb-cover-tools { max-width: 1000px; margin-top: 35px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; align-items: stretch; }
+.lb-insurer-compare { max-width: 1000px; margin-top: 35px; border: 1px solid var(--lb-rule); background: #f7f6f1; }
+.lb-compare-heading { padding: 31px; display: grid; grid-template-columns: 1.05fr .95fr; gap: 55px; color: #fff; background: #171a1c; }
+.lb-compare-heading > div > span,
+.lb-compare-rules > span { color: var(--lb-lime); font-size: 10px; font-weight: 850; letter-spacing: .07em; }
+.lb-compare-heading h2,
+.lb-compare-rules h2 { margin: 12px 0 0; font-family: "Arial Black", Impact, sans-serif; font-size: 38px; letter-spacing: -.08em; line-height: .94; }
+.lb-compare-heading p { max-width: 410px; margin: 0; align-self: end; color: #c5c9c8; font-size: 11px; line-height: 1.55; }
+.lb-quote-assumptions { padding: 16px 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 7px; border-bottom: 1px solid var(--lb-rule); background: var(--lb-violet); }
+.lb-quote-assumptions strong { margin-right: 6px; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+.lb-quote-assumptions span { padding: 6px 9px; border: 1px solid rgba(17, 17, 17, .38); background: rgba(255, 255, 255, .34); font-size: 9px; font-weight: 750; }
+.lb-provider-grid { padding: 14px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lb-provider-card { min-width: 0; padding: 19px; position: relative; border: 1px solid var(--lb-rule); background: #fff; transition: transform 180ms ease, box-shadow 180ms ease; }
+.lb-provider-card::before { height: 7px; position: absolute; inset: 0 0 auto; content: ""; background: var(--provider-colour); }
+.lb-provider-card.provider-lime { --provider-colour: var(--lb-lime); }
+.lb-provider-card.provider-blue { --provider-colour: var(--lb-blue); }
+.lb-provider-card.provider-coral { --provider-colour: var(--lb-coral); }
+.lb-provider-card.is-cheapest { transform: translateY(-4px); box-shadow: 5px 5px 0 #171a1c; }
+.lb-provider-card header { margin-top: 7px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.lb-provider-card header span { color: #5e6467; font-size: 8px; font-weight: 850; letter-spacing: .055em; }
+.lb-provider-card.is-cheapest header span { color: #143e26; }
+.lb-provider-card h3 { margin: 6px 0 0; font-family: "Arial Black", Impact, sans-serif; font-size: 23px; letter-spacing: -.07em; line-height: 1; }
+.lb-provider-card header a { padding: 4px 0; display: inline-flex; align-items: center; gap: 4px; color: var(--lb-blue); font-size: 9px; font-weight: 850; text-align: right; text-decoration: underline; text-underline-offset: 3px; }
+.lb-provider-card > p { min-height: 47px; margin: 17px 0 0; color: #5a6063; font-size: 10px; line-height: 1.45; }
+.lb-provider-inputs { margin-top: 17px; display: grid; gap: 9px; }
+.lb-provider-inputs label { display: grid; gap: 6px; font-size: 9px; font-weight: 800; }
+.lb-provider-inputs input { width: 100%; min-height: 43px; padding: 0 11px; border: 1px solid #aeb2b3; border-radius: 0; color: #111; background: #fbfbf8; font: 700 14px ui-monospace, SFMono-Regular, Menlo, monospace; outline: none; }
+.lb-provider-inputs input:focus { border-color: var(--lb-blue); box-shadow: inset 4px 0 var(--lb-blue); }
+.lb-provider-card dl { margin: 17px 0 0; border-top: 1px solid #d7d9d9; }
+.lb-provider-card dl > div { padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 8px; border-bottom: 1px solid #d7d9d9; }
+.lb-provider-card dt { color: #656b6d; font-size: 8px; text-transform: uppercase; }
+.lb-provider-card dd { margin: 0; font-family: "Arial Black", Impact, sans-serif; font-size: 14px; letter-spacing: -.04em; text-align: right; }
+.lb-comparison-result { margin: 0 14px 14px; padding: 22px; display: grid; grid-template-columns: 1.2fr .8fr; gap: 35px; align-items: center; color: #fff; background: #171a1c; }
+.lb-comparison-result.is-ready { color: #111; background: var(--lb-lime); }
+.lb-comparison-result span { font-size: 9px; font-weight: 850; letter-spacing: .06em; }
+.lb-comparison-result h3 { margin: 7px 0 0; font-family: "Arial Black", Impact, sans-serif; font-size: 23px; letter-spacing: -.06em; }
+.lb-comparison-result p { max-width: 550px; margin: 7px 0 0; color: #c4c8c8; font-size: 10px; line-height: 1.45; }
+.lb-comparison-result.is-ready p { color: #253027; }
+.lb-result-stat { padding-left: 21px; display: grid; gap: 6px; border-left: 1px solid currentColor; }
+.lb-result-stat strong { font-size: 13px; }
+.lb-quote-disclaimer { margin: 0; padding: 0 18px 18px; display: flex; align-items: flex-start; gap: 9px; color: #596063; font-size: 9px; line-height: 1.45; }
+.lb-quote-disclaimer svg { flex: none; color: var(--lb-blue); }
+.lb-cover-tools { max-width: 1000px; margin-top: 16px; display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; align-items: stretch; }
+.lb-compare-rules { padding: 27px; color: #fff; background: #171a1c; }
+.lb-compare-rules h2 { margin-top: 12px; font-size: 31px; }
+.lb-compare-rules ol { margin: 22px 0 0; padding: 0; list-style: none; }
+.lb-compare-rules li { padding: 11px 0; display: grid; grid-template-columns: 35px 1fr; gap: 10px; border-top: 1px solid #565c5d; }
+.lb-compare-rules li:last-child { border-bottom: 1px solid #565c5d; }
+.lb-compare-rules li b { color: var(--lb-lime); font-size: 10px; }
+.lb-compare-rules li p { margin: 0; color: #c5c9c8; font-size: 10px; line-height: 1.45; }
+.lb-compare-rules li strong { color: #fff; }
 .lb-premium-calculator { padding: 27px; color: #fff; background: #171a1c; }
 .lb-premium-calculator h2 { margin-top: 12px; }
 .lb-premium-calculator > div:first-child p { margin: 9px 0 20px; color: #b9bfc0; font-size: 11px; }
@@ -3320,6 +3369,11 @@
   .lb-page-facts > div { min-height: 74px; border-right: 0; border-bottom: 1px solid var(--lb-rule); }
   .lb-page-facts > div:last-child { border-bottom: 0; }
   .lb-cover-tools { grid-template-columns: 1fr; }
+  .lb-compare-heading { grid-template-columns: 1fr; gap: 16px; }
+  .lb-provider-grid { grid-template-columns: 1fr; }
+  .lb-provider-card > p { min-height: 0; }
+  .lb-comparison-result { grid-template-columns: 1fr; gap: 18px; }
+  .lb-result-stat { padding: 15px 0 0; border-top: 1px solid currentColor; border-left: 0; }
   .lb-journey-next { grid-template-columns: 58px 1fr; }
   .lb-journey-next > a { grid-column: 1 / -1; justify-content: center; white-space: normal; text-align: center; }
 }
@@ -3330,7 +3384,13 @@
   .lb-scenario-options { grid-template-columns: 1fr; }
   .lb-rights-note { grid-template-columns: 1fr; gap: 8px; }
   .lb-premium-calculator,
+  .lb-compare-rules,
   .lb-cover-quiz { padding: 22px 18px; }
+  .lb-compare-heading { padding: 24px 19px; }
+  .lb-compare-heading h2 { font-size: 31px; }
+  .lb-quote-assumptions { padding: 13px; }
+  .lb-provider-grid { padding: 9px; }
+  .lb-comparison-result { margin: 0 9px 12px; padding: 18px; }
   .lb-journey-next { padding: 22px 18px; grid-template-columns: 48px 1fr; gap: 13px; }
   .lb-journey-next > span { font-size: 40px; }
   .lb-journey-next h2 { font-size: 25px; }
