@@ -4,6 +4,7 @@ import App from './App.jsx';
 import Lowbeam from './Lowbeam.jsx';
 import './styles.css';
 import './lowbeam.css';
+import './assignment.css';
 
 const legacyRoute = window.location.pathname === '/og' || window.location.pathname.startsWith('/og/');
 

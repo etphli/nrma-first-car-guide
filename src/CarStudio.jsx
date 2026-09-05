@@ -11,12 +11,16 @@ export default function CarStudio() {
   const [active, setActive] = useState('cost');
   const [progress, setProgress] = useState(0);
   const [ready, setReady] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [paused, setPaused] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const pausedRef = useRef(paused);
 
   useEffect(() => {
     let frame = 0;
     let cleanup = () => {};
     let cancelled = false;
     let modelReady = false;
+    const loadTimeout = window.setTimeout(() => { if (!cancelled && !modelReady) setFailed(true); }, 15000);
 
     Promise.all([import('three'), import('three/addons/loaders/GLTFLoader.js'), import('three/addons/libs/meshopt_decoder.module.js')]).then(([THREE, { GLTFLoader }, { MeshoptDecoder }]) => {
       if (cancelled || !mountRef.current) return;
@@ -92,11 +96,13 @@ export default function CarStudio() {
         model.rotation.y = -0.62;
         turntable.add(model);
         modelReady = true;
+        window.clearTimeout(loadTimeout);
+        setFailed(false);
         setReady(true);
         setProgress(100);
       }, (event) => {
-        if (event.total) setProgress(Math.round((event.loaded / event.total) * 100));
-      });
+        if (!cancelled && event.total) setProgress(Math.round((event.loaded / event.total) * 100));
+      }, () => { if (!cancelled) { window.clearTimeout(loadTimeout); setFailed(true); } });
 
       let dragging = false;
       let previousX = 0;
@@ -112,13 +118,16 @@ export default function CarStudio() {
         const { width, height } = mount.getBoundingClientRect();
         renderer.setSize(width, height, false);
         camera.aspect = width / Math.max(height, 1);
+        const framing = Math.max(1, 1.35 / Math.max(camera.aspect, 0.1));
+        camera.position.set(5.8 * framing, 0.78 + 1.87 * framing, 6.4 * framing);
+        camera.lookAt(0, 0.78, 0);
         camera.updateProjectionMatrix();
       };
       const observer = new ResizeObserver(resize);
       observer.observe(mount);
       resize();
       const animate = () => {
-        if (!dragging && modelReady) { turntable.rotation.y += velocity; velocity *= 0.988; if (Math.abs(velocity) < 0.0007) velocity = 0.0007; }
+        if (!dragging && modelReady && !pausedRef.current) { turntable.rotation.y += velocity; velocity *= 0.988; if (Math.abs(velocity) < 0.0007) velocity = 0.0007; }
         renderer.render(scene, camera);
         frame = requestAnimationFrame(animate);
       };
@@ -133,13 +142,16 @@ export default function CarStudio() {
         renderer.dispose();
         mount.replaceChildren();
       };
-    });
-    return () => { cancelled = true; cleanup(); };
+    }).catch(() => { if (!cancelled) { window.clearTimeout(loadTimeout); setFailed(true); } });
+    return () => { cancelled = true; window.clearTimeout(loadTimeout); cleanup(); };
   }, []);
 
   return <div className="lb-car-studio">
     <div ref={mountRef} className="lb-car-canvas" aria-hidden="true" />
-    {!ready && <div className="lb-car-loading"><span>Loading detailed model</span><i><b style={{ width: `${progress}%` }} /></i><small>{progress}%</small></div>}
-    {ready && <><div className="lb-hotspots" aria-label="Explore the car checks">{Object.entries(HOTSPOTS).map(([key, value]) => <button key={key} type="button" aria-pressed={active === key} className={active === key ? 'is-active' : ''} onClick={() => setActive(key)}><span>+</span>{value[0]}</button>)}</div><div className="lb-hotspot-note" role="status"><strong>{HOTSPOTS[active][0]}</strong><span>{HOTSPOTS[active][1]}</span><a href={HOTSPOTS[active][2]}>{HOTSPOTS[active][3]} <b>→</b></a></div><p className="lb-drag-hint">Drag the car to rotate</p></>}
+    {!ready && <div className="lb-car-fallback"><img src="/assets/lowbeam-car.png" alt="Black hatchback illustration" /><span role="status">{failed ? 'Showing a still image. Explore the checks below.' : `Loading interactive car${progress > 0 ? ` · ${progress}%` : ''}`}</span></div>}
+    <span className="lb-car-caption">Illustration · not your selected vehicle</span>
+    <div className="lb-hotspots" aria-label="Explore the car checks">{Object.entries(HOTSPOTS).map(([key, value]) => <button key={key} type="button" aria-pressed={active === key} className={active === key ? 'is-active' : ''} onClick={() => setActive(key)}><span>+</span>{value[0]}</button>)}</div>
+    <div className="lb-hotspot-note" role="status"><strong>{HOTSPOTS[active][0]}</strong><span>{HOTSPOTS[active][1]}</span><a href={HOTSPOTS[active][2]}>{HOTSPOTS[active][3]} <b>→</b></a></div>
+    {ready && <div className="lb-car-controls"><span>Drag to rotate</span><button type="button" aria-pressed={paused} onClick={() => { pausedRef.current = !paused; setPaused(!paused); }}>{paused ? 'Resume rotation' : 'Pause rotation'}</button></div>}
   </div>;
 }
